@@ -1,207 +1,116 @@
-/*
-
-let input = document.querySelector(".input");
 let numbers = document.querySelectorAll(".number");
 let decimal = document.querySelector(".decimal");
-let op = document.querySelectorAll(".operator");
-let equal = document.querySelector(".equal");
-let clear = document.querySelector(".clear");
-let currentScreen = document.querySelector(".current");
-let previousScreen = document.querySelector(".previous");
-
-let operation = "";
-let currentValue = "";
-let previousValue = "";
-let result;
-
-numbers.forEach((number) =>
-  number.addEventListener("click", function (e) {
-    handleNum(e.target.textContent);
-    currentScreen.textContent = currentValue;
-    console.log(currentValue);
-  })
-);
-
-op.forEach((op) => {
-  op.addEventListener("click", function (e) {
-    handleOp(e.target.textContent);
-    previousScreen.textContent = previousValue + " " + operation;
-    currentScreen.textContent = currentValue;
-  });
-});
-
-clear.addEventListener("click", function () {
-  previousValue = "";
-  currentValue = "";
-  operation = "";
-  previousScreen.textContent = currentValue;
-  currentScreen.textContent = currentValue;
-});
-
-equal.addEventListener("click", function (e) {
-  calculate();
-  previousScreen.textContent = "";
-  currentScreen.textContent = result;
-});
-
-function handleNum(num) {
-  // console.log(num);
-  if (currentValue.length <= 9) currentValue += num;
-}
-
-function handleOp(op) {
-  console.log(op);
-  operation = op;
-  previousValue = currentValue;
-  currentValue = "";
-}
-
-function calculate() {
-  previousValue = Number(previousValue);
-  currentValue = Number(currentValue);
-  operation = operation.toString();
-  result = operate(previousValue, operation, currentValue);
-  previousValue = previousValue.toString();
-  currentValue = currentValue.toString();
-}
-
-function add(a, b) {
-  return a + b;
-}
-
-function subtract(a, b) {
-  return a - b;
-}
-
-function multiply(a, b) {
-  return a * b;
-}
-
-function divide(a, b) {
-  return a / b;
-}
-
-let num1;
-let operator;
-let num2;
-
-function operate(num1, operator, num2) {
-  if (operator == "+") {
-    return add(num1, num2);
-  } else if (operator == "-") {
-    return subtract(num1, num2);
-  } else if (operator == "x") {
-    return multiply(num1, num2);
-  } else if (operator == "÷") {
-    return divide(num1, num2);
-  }
-}
-
-console.log(operate(previousValue, operation, currentValue));
-*/
-
-let input = document.querySelector(".screen");
-let numbers = document.querySelectorAll(".number");
-let decimal = document.querySelector(".decimal");
-let equal = document.querySelector(".equal");
 let operators = document.querySelectorAll(".operator");
+let equal = document.querySelector(".equal");
 let clear = document.querySelector(".clear");
-let previousScreen = document.querySelector(".previous");
-let currentScreen = document.querySelector(".current");
+let input = document.querySelector("input");
+let backspace = document.querySelector(".backspace");
 
-function add(a, b) {
-  return a + b;
-}
-
-function subtract(a, b) {
-  return a - b;
-}
-
-function multiply(a, b) {
-  return a * b;
-}
-
-function divide(a, b) {
-  return a / b;
-}
-
-console.log(operate(100, "+", 20));
-
-let previousValue;
-let operation;
-let currentValue;
+let firstValue = "";
+let operator = "";
+let secondValue = "";
 
 numbers.forEach((number) =>
   number.addEventListener("click", function (e) {
-    handleNumber(e.target.textContent);
-    currentScreen.textContent = currentValue;
+    input.value += e.target.textContent;
   })
 );
-
-function handleNumber(num) {
-  currentValue += num;
-  previousValue = currentValue;
-  // currentScreen.textContent = "";
-  // currentValue = "";
-}
-// console.log(previousValue);
-
-operators.forEach((op) =>
-  op.addEventListener("click", function (e) {
-    handleOp(e.target.textContent);
-    previousScreen.textContent = previousValue + " " + operation;
-    currentScreen.textContent = currentValue;
-  })
-);
-console.log(previousScreen.textContent);
-
-function handleOp(op) {
-  // console.log(op);
-  operation = op;
-  previousValue = currentValue;
-  currentValue = "";
-}
 
 decimal.addEventListener("click", function (e) {
-  handleDecimal(e.target.textContent);
+  if (!input.value.includes(".")) {
+    input.value += e.target.textContent;
+  }
 });
 
-function handleDecimal(dec) {
-  console.log(dec);
-}
+operators.forEach((operatorBtn) =>
+  operatorBtn.addEventListener("click", function (e) {
+    firstValue = input.value;
+    operator = e.target.textContent;
+    input.value = "";
+  })
+);
 
 equal.addEventListener("click", function (e) {
-  // handleEqual(e.target.textContent);
+  secondValue = input.value;
+  let result = operate(firstValue, secondValue, operator);
+  input.value = result;
+  firstValue = "";
+  secondValue = "";
+  operator = "";
+});
 
-  previousValue = Number(previousValue);
-  currentValue = Number(currentValue);
-
-  // console.log(operate(previousValue, operation, currentValue));
-  console.log(previousValue);
-  console.log(currentValue);
-
-  console.log(divide(previousValue, currentValue));
+backspace.addEventListener("click", function (e) {
+  input.value = input.value.substring(0, input.value.length - 1);
 });
 
 clear.addEventListener("click", function (e) {
-  previousValue = "";
-  currentValue = "";
-  operation = "";
-  previousScreen.textContent = currentValue;
-  currentScreen.textContent = currentValue;
+  input.value = "";
+  firstValue = "";
+  secondValue = "";
+  operator = "";
 });
 
-function operate(num1, operation, num2) {
-  if (operation === "+") {
-    return add(num1, num2);
-  } else if (operation === "-") {
-    return subtract(num1, num2);
-  } else if (operation === "x") {
-    return multiply(num1, num2);
-  } else if (operation === "÷") {
-    return divide(num1, num2);
-  }
+document.addEventListener("keydown", function (e) {
+  handleKeyPress(e.key);
+});
+
+function add(a, b) {
+  return a + b;
 }
 
-console.log(previousValue);
-console.log(currentValue);
+function subtract(a, b) {
+  return a - b;
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+function divide(a, b) {
+  if (b === 0) {
+    return "Cannot divide by zero";
+  } else return a / b;
+}
+
+function operate(firstNum, secondNum, operation) {
+  firstNum = parseFloat(firstNum);
+  secondNum = parseFloat(secondNum);
+
+  if (operation === "+") {
+    return add(firstNum, secondNum);
+  } else if (operation === "-") {
+    return subtract(firstNum, secondNum);
+  } else if (operation === "*") {
+    return multiply(firstNum, secondNum);
+  } else if (operation === "/") {
+    return divide(firstNum, secondNum);
+  } else return "Invalid operation";
+}
+
+function handleKeyPress(key) {
+  if (!isNaN(key)) {
+    input.value += key;
+  } else if (key === ".") {
+    if (!input.value.includes(".")) {
+      input.value += key;
+    }
+  } else if (key === "+" || key === "-" || key === "*" || key === "/") {
+    firstValue = input.value;
+    operator = key;
+    input.value = "";
+  } else if (key === "Enter" || key === "=") {
+    secondValue = input.value;
+    let result = operate(firstValue, secondValue, operator);
+    input.value = result;
+    firstValue = "";
+    secondValue = "";
+    operator = "";
+  } else if (key === "Backspace" || key === "Delete") {
+    input.value = input.value.substring(0, input.value.length - 1);
+  } else if (key === "Escape") {
+    input.value = "";
+    firstValue = "";
+    secondValue = "";
+    operator = "";
+  }
+}
